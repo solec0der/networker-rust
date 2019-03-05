@@ -1,0 +1,7 @@
+[package]
+name = "networker"
+version = "0.1.0"
+authors = ["Yannick Huggler <yannick.huggler@bluewin.ch>"]
+edition = "2018"
+
+[dependencies]
