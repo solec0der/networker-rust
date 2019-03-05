@@ -5,5 +5,37 @@ authors = ["Yannick Huggler <yannick.huggler@bluewin.ch>"]
 edition = "2018"
 
 [dependencies]
-[dependencies.pnet]
-version = "0.22.0"
+[dependencies.failure]
+version = "0.1.1"
+
+[dependencies.futures]
+version = "0.1"
+
+[dependencies.libc]
+version = "0.2"
+
+[dependencies.mio]
+version = "0.6"
+
+[dependencies.parking_lot]
+version = "0.5.5"
+
+[dependencies.rand]
+version = "0.4"
+
+[dependencies.socket2]
+version = "0.3"
+
+[dependencies.time]
+version = "0.1"
+
+[dependencies.tokio-executor]
+version = "0.1.2"
+
+[dependencies.tokio-reactor]
+version = "0.1.1"
+
+[dependencies.tokio-timer]
+version = "0.2.3"
+[dev-dependencies.tokio]
+version = "0.1"

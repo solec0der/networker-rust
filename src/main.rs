@@ -1,59 +1,31 @@
-extern crate pnet;
+use std::process::Command;
 
-use pnet::datalink::{self, NetworkInterface};
-use pnet::datalink::Channel::Ethernet;
-use pnet::packet::{Packet, MutablePacket};
-use pnet::packet::ethernet::{EthernetPacket, MutableEthernetPacket};
-
-use std::env;
-
+use pinger::Pinger;
+mod pinger;
 
 fn main() {
-    let interface_name = env::args().nth(1).unwrap();
-    let interface_names_match =
-        |iface: &NetworkInterface| iface.name == interface_name;
 
-    // Find the network interface with the provided name
-    let interfaces = datalink::interfaces();
-    let interface = interfaces.into_iter()
-                              .filter(interface_names_match)
-                              .next()
-                              .unwrap();
+    let pinger = Pinger::new();
 
-    // Create a new channel, dealing with layer 2 packets
-    let (mut tx, mut rx) = match datalink::channel(&interface, Default::default()) {
-        Ok(Ethernet(tx, rx)) => (tx, rx),
-        Ok(_) => panic!("Unhandled channel type"),
-        Err(e) => panic!("An error occurred when creating the datalink channel: {}", e)
-    };
+    pinger.execute_pinging();
 
-    loop {
-        match rx.next() {
-            Ok(packet) => {
-                let packet = EthernetPacket::new(packet).unwrap();
+    // let host = "172.17.80.159";
 
-                // Constructs a single packet, the same length as the the one received,
-                // using the provided closure. This allows the packet to be constructed
-                // directly in the write buffer, without copying. If copying is not a
-                // problem, you could also use send_to.
-                //
-                // The packet is sent once the closure has finished executing.
-                tx.build_and_send(1, packet.packet().len(),
-                    &mut |mut new_packet| {
-                        let mut new_packet = MutableEthernetPacket::new(new_packet).unwrap();
+    // let mut ping_command = Command::new("sh");
+    // ping_command.arg("-c").arg("ping ".to_owned() + host + " -t 1");
+    // let ping = ping_command.output().expect("failed to execute process");
 
-                        // Create a clone of the original packet
-                        new_packet.clone_from(&packet);
+    // let mut raw_ping_output = String::from_utf8(ping.stdout).unwrap();
 
-                        // Switch the source and destination
-                        new_packet.set_source(packet.get_destination());
-                        new_packet.set_destination(packet.get_source());
-                });
-            },
-            Err(e) => {
-                // If an error occurs, we can handle it here
-                // panic!("An error occurred while reading: {}", e);
-            }
-        }
-    }
+    // let split_index = raw_ping_output.find("packets received").unwrap() - 2;
+
+    // // Get amount of received packets, to check if host is alive.
+    // let received_packets = raw_ping_output.split_off(split_index).remove(0).to_string();
+    // let received_packets: u32 = received_packets.parse().unwrap();
+
+    // if received_packets >= 1 {
+    //     println!("fantastisch");
+    // } else {
+    //     println!("ne");
+    // }
 }
