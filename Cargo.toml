@@ -5,3 +5,5 @@ authors = ["Yannick Huggler <yannick.huggler@bluewin.ch>"]
 edition = "2018"
 
 [dependencies]
+[dependencies.pnet]
+version = "0.22.0"
