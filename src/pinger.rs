@@ -17,21 +17,20 @@ impl Pinger {
 
     pub fn add_host(&mut self, host_address: String) {
         self.hosts.push(host_address);
-
-        println!("{}", self.hosts.get(0).unwrap());
     }
 
     pub fn execute_pinging(&self) {
-        let hosts_ = self.hosts.clone();
+        // let hosts = self.hosts;
 
-        for i in 0..hosts_.len() {
-            // thread::spawn(move || {
-            let host = hosts_.get(i).unwrap();
-
+        for h in hosts {
+            
+            thread::spawn(move || {
+            // let host = hosts.get(i).unwrap();
+            println!("tji");
             let mut ping_command = Command::new("sh");
             ping_command
                 .arg("-c")
-                .arg("ping ".to_owned() + host + " -t 1");
+                .arg("ping ".to_owned() + h + " -t 1");
             let ping = ping_command.output().expect("failed to execute process");
 
             let mut raw_ping_output = String::from_utf8(ping.stdout).unwrap();
@@ -43,12 +42,12 @@ impl Pinger {
             let received_packets: u32 = received_packets.parse().unwrap();
 
             if received_packets >= 1 {
-                println!("fantastisch");
+                println!("HOST is up");
             } else {
-                println!("ne");
+                println!("HOST is down");
             }
-            //     thread::sleep(Duration::from_millis(1))
-            // });
+                thread::sleep(Duration::from_millis(1))
+            });
         }
     }
 }
